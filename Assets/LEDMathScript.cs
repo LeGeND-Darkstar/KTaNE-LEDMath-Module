@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
 using KModkit;
+using System.Collections.Generic;
 
 public class LEDMathScript : MonoBehaviour
 {
@@ -269,4 +270,135 @@ public class LEDMathScript : MonoBehaviour
         }
     }
 #endregion
+    public int[] GetIntArray(int num)
+{
+    List<int> listOfInts = new List<int>();
+    while(num > 0)
+    {
+        listOfInts.Add(num % 10);
+        num = num / 10;
+    }
+    listOfInts.Reverse();
+    return listOfInts.ToArray();
+}
+    public string TwitchHelpMessage = "Use '!{0} 69' to input number 69! Then use '!{0} submit' to submit the module and '!{0} clear' to clear it!";
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        int tried;
+        bool neg = false;
+        if(int.TryParse(command, out tried))
+        {   
+            tried = int.Parse(command);
+            if(tried<0){
+                neg=true;
+                tried = tried*(-1);
+            }
+            if(tried==0){
+                yield return null;
+                yield return P1Button;
+                yield return P1Button;
+                yield return null;
+                yield return S1Button;
+                yield return S1Button;
+            }
+            else{
+                //int finalhundreds;
+                //int finaltens;
+                //int finalones;
+                decimal hundreds = tried/100;
+               int finalhundreds= Decimal.ToInt32(hundreds);
+                tried=tried-(finalhundreds*100);
+                decimal tens = tried/10;
+               int finaltens= Decimal.ToInt32(tens);
+               tried=tried-(finaltens*10);
+               int finalones = tried;
+                /*int[] triedl=GetIntArray(tried);
+                if(triedl.Length==3){
+                    finalhundreds=triedl[0];
+                    finaltens=triedl[1];
+                    finalones=triedl[2];
+                }else{
+                if(triedl.Length==2){
+                    finalhundreds=0;
+                    finaltens=triedl[0];
+                    finalones=triedl[1];
+                }else{
+                if(triedl.Length==1){
+                    finalhundreds=0;
+                    finaltens=0;
+                    finalones=triedl[0];
+                }else{
+                    finalhundreds=0;
+                    finaltens=0;
+                    finalones=0;
+                }}}*/
+                
+               if(neg)
+               {
+                   if(finalhundreds>0){
+                       for(int i=0; i<finalhundreds;i++){
+                           yield return null;
+                           yield return S100Button;
+                           yield return S100Button;
+                       }
+                   }
+                   if(finaltens>0){
+                       for(int i=0; i<finaltens;i++){
+                           yield return null;
+                           yield return S10Button;
+                           yield return S10Button;
+                       }
+                       
+                   }
+                    if(finalones>0){
+                       for(int i=0; i<finalones;i++){
+                           yield return null;
+                           yield return S1Button;
+                           yield return S1Button;
+                       }
+                   } 
+               }
+               else
+               {
+                   if(finalhundreds>0){
+                       for(int i=0; i<finalhundreds;i++){
+                           yield return null;
+                           yield return P100Button;
+                           yield return P100Button;
+                       }
+                   }
+                   if(finaltens>0){
+                       for(int i=0; i<finaltens;i++){
+                           yield return null;
+                           yield return P10Button;
+                           yield return P10Button;
+                       }
+                       
+                   }
+                    if(finalones>0){
+                       for(int i=0; i<finalones;i++){
+                           yield return null;
+                           yield return P1Button;
+                           yield return P1Button;
+                       }
+                   } 
+               }
+            }
+        }
+        else{
+            if(command.Equals("submit", StringComparison.InvariantCultureIgnoreCase)){
+                yield return null;
+                yield return SubmitButton;
+                yield return SubmitButton;
+            }
+            if(command.Equals("clear", StringComparison.InvariantCultureIgnoreCase)){
+                yield return null;
+                yield return ClearButton;
+                yield return ClearButton;
+            }
+            else{
+                yield return null;
+            }
+        }   
+    }
 }
